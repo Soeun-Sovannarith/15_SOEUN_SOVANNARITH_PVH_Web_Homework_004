@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Management</title>
+    <!-- Tailwind CSS (compiled locally) -->
+    <link href="./src/output.css" rel="stylesheet" />
+    <!-- Google Fonts: Inter -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-[#E0F2F1] min-h-screen p-8 transition-all duration-300">
+    <!-- Main UI Container -->
+    <div id="app" class="max-w-5xl mx-auto space-y-6">
+      <!-- Header -->
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-4xl font-bold tracking-tight text-slate-900">
+          Task List
+        </h1>
+        <button
+          id="addTaskBtn"
+          class="bg-[#6A1B9A] hover:bg-purple-800 text-white font-semibold py-2 px-6 rounded-xl shadow-lg transition-transform transform active:scale-95 duration-200"
+        >
+          Add Task
+        </button>
+      </div>
+
+      <!-- Table Header (Rounded Box) -->
+      <div
+        class="bg-white/40 backdrop-blur-sm border border-white/20 grid grid-cols-4 rounded-3xl p-6 shadow-sm mb-6"
+      >
+        <span class="text-[#00BCD4] font-bold text-xl ml-4">Task</span>
+        <span class="text-[#00BCD4] font-bold text-xl text-center"
+          >Priority</span
+        >
+        <span class="text-[#00BCD4] font-bold text-xl text-center">Status</span>
+        <span class="text-amber-500 font-bold text-xl text-right mr-8"
+          >Action</span
+        >
+      </div>
+
+      <!-- Task List Rows -->
+      <div id="taskList" class="space-y-4">
+        <!-- Dynamically populated by script.js -->
+      </div>
+    </div>
+
+    <!-- Modals Overlay -->
+    <div
+      id="modalOverlay"
+      class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden items-center justify-center p-4 transition-opacity duration-300"
+    >
+      <!-- Add/Edit Task Modal -->
+      <div
+        id="taskModal"
+        class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl p-10 relative hidden transform transition-all duration-300 scale-95 opacity-0"
+      >
+        <button
+          id="closeModal"
+          class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-8 h-8"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+        <h2 id="modalTitle" class="text-2xl font-bold mb-6">Add Task</h2>
+
+        <form id="taskForm" class="space-y-6">
+          <input type="hidden" id="taskId" />
+          <div>
+            <label class="block text-slate-700 font-bold mb-2">Task</label>
+            <input
+              type="text"
+              id="taskName"
+              placeholder="Web Homework"
+              class="w-full border-2 border-[#00BCD4] rounded-2xl py-3 px-4 focus:ring-2 focus:ring-[#00BCD4] outline-none transition-shadow duration-200"
+              required
+            />
+          </div>
+
+          <div>
+            <label class="block text-slate-700 font-bold mb-2">Priority</label>
+            <div class="flex gap-3">
+              <button
+                type="button"
+                data-priority="High"
+                class="priority-btn border-2 border-red-500 text-red-500 font-semibold py-2 px-6 rounded-2xl hover:bg-red-50 transition-colors duration-200 flex-1"
+              >
+                High
+              </button>
+              <button
+                type="button"
+                data-priority="Medium"
+                class="priority-btn border-2 border-amber-500 text-amber-500 font-semibold py-2 px-6 rounded-2xl hover:bg-amber-50 transition-colors duration-200 flex-1"
+              >
+                Medium
+              </button>
+              <button
+                type="button"
+                data-priority="Low"
+                class="priority-btn border-2 border-emerald-500 text-emerald-500 font-semibold py-2 px-6 rounded-2xl hover:bg-emerald-50 transition-colors duration-200 flex-1"
+              >
+                Low
+              </button>
+            </div>
+            <input type="hidden" id="taskPriority" value="Medium" />
+          </div>
+
+          <div>
+            <label class="block text-slate-700 font-bold mb-2">Status</label>
+            <div class="flex gap-3">
+              <button
+                type="button"
+                data-status="To Do"
+                class="status-btn border-2 border-[#00BCD4] text-[#00BCD4] font-semibold py-2 px-6 rounded-2xl hover:bg-[#E0F7FA] transition-colors duration-200 flex-1"
+              >
+                To Do
+              </button>
+              <button
+                type="button"
+                data-status="Progress"
+                class="status-btn border-2 border-[#00BCD4] text-[#00BCD4] font-semibold py-2 px-6 rounded-2xl hover:bg-[#E0F7FA] transition-colors duration-200 flex-1"
+              >
+                Progress
+              </button>
+              <button
+                type="button"
+                data-status="Done"
+                class="status-btn border-2 border-[#00BCD4] text-[#00BCD4] font-semibold py-2 px-6 rounded-2xl hover:bg-[#E0F7FA] transition-colors duration-200 flex-1"
+              >
+                Done
+              </button>
+            </div>
+            <input type="hidden" id="taskStatus" value="Progress" />
+          </div>
+
+          <div class="flex justify-end gap-3 pt-4">
+            <button
+              type="button"
+              id="cancelBtn"
+              class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition-transform active:scale-95 hidden"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              id="submitBtn"
+              class="bg-[#6A1B9A] hover:bg-purple-800 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition-transform active:scale-95 flex-1 md:flex-none"
+            >
+              Add
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Delete Confirmation Modal -->
+      <div
+        id="deleteModal"
+        class="bg-white w-full max-w-md rounded-[2rem] shadow-2xl p-10 flex flex-col items-center text-center hidden animate-in zoom-in duration-300"
+      >
+        <h2 class="text-3xl font-extrabold text-red-600 mb-8">
+          Are you sure ?
+        </h2>
+
+        <div class="mb-8">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-24 h-24 text-red-500"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+            />
+          </svg>
+        </div>
+
+        <div class="flex gap-4 w-full">
+          <button
+            id="confirmDelete"
+            class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-2xl flex-1 shadow-lg transition-transform active:scale-95"
+          >
+            Yes
+          </button>
+          <button
+            id="cancelDelete"
+            class="bg-[#2196F3] hover:bg-[#1976D2] text-white font-bold py-3 rounded-2xl flex-1 shadow-lg transition-transform active:scale-95"
+          >
+            No
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
