@@ -1,4 +1,3 @@
-// Task Data Management
 let tasks = JSON.parse(localStorage.getItem('tasks')) || [
     { id: 1, name: 'Java Homework', priority: 'High', status: 'Progress' },
     { id: 2, name: 'Korean Homework', priority: 'Medium', status: 'Progress' },
@@ -8,7 +7,6 @@ let tasks = JSON.parse(localStorage.getItem('tasks')) || [
 let currentEditId = null;
 let currentDeleteId = null;
 
-// DOM Elements
 const taskList = document.getElementById('taskList');
 const addTaskBtn = document.getElementById('addTaskBtn');
 const modalOverlay = document.getElementById('modalOverlay');
@@ -22,7 +20,6 @@ const closeModalBtn = document.getElementById('closeModal');
 const deleteConfirmBtn = document.getElementById('confirmDelete');
 const deleteCancelBtn = document.getElementById('cancelDelete');
 
-// Form Inputs
 const inputTaskId = document.getElementById('taskId');
 const inputTaskName = document.getElementById('taskName');
 const inputTaskPriority = document.getElementById('taskPriority');
@@ -30,13 +27,11 @@ const inputTaskStatus = document.getElementById('taskStatus');
 const priorityButtons = document.querySelectorAll('.priority-btn');
 const statusButtons = document.querySelectorAll('.status-btn');
 
-// --- Initialization ---
 function init() {
     renderTasks();
     setupEventListeners();
 }
 
-// --- Render Tasks ---
 function renderTasks() {
     taskList.innerHTML = '';
     
@@ -44,7 +39,6 @@ function renderTasks() {
         const row = document.createElement('div');
         row.className = 'bg-white grid grid-cols-4 items-center rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200';
         
-        // Priority Color Mapping
         const priorityColors = {
             'High': 'text-red-600',
             'Medium': 'text-amber-500',
@@ -71,19 +65,15 @@ function renderTasks() {
         taskList.appendChild(row);
     });
     
-    // Save to LocalStorage
     localStorage.setItem('tasks', JSON.stringify(tasks));
 }
 
-// --- Event Listeners ---
 function setupEventListeners() {
-    // Open Add Task Modal
     addTaskBtn.addEventListener('click', () => {
         resetForm();
         showModal('add');
     });
 
-    // Close Modal
     [closeModalBtn, modalOverlay, deleteCancelBtn, cancelEditBtn].forEach(el => {
         el.addEventListener('click', (e) => {
             if (e.target === el || el === closeModalBtn || el === deleteCancelBtn || el === cancelEditBtn) {
@@ -92,7 +82,6 @@ function setupEventListeners() {
         });
     });
 
-    // Priority Button Selection
     priorityButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             inputTaskPriority.value = btn.dataset.priority;
@@ -100,7 +89,6 @@ function setupEventListeners() {
         });
     });
 
-    // Status Button Selection
     statusButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             inputTaskStatus.value = btn.dataset.status;
@@ -108,7 +96,6 @@ function setupEventListeners() {
         });
     });
 
-    // Form Submission
     taskForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const taskData = {
@@ -128,7 +115,6 @@ function setupEventListeners() {
         hideModal();
     });
 
-    // Delete Confirmation
     deleteConfirmBtn.addEventListener('click', () => {
         if (currentDeleteId) {
             tasks = tasks.filter(t => t.id !== currentDeleteId);
@@ -138,20 +124,16 @@ function setupEventListeners() {
     });
 }
 
-// --- Helper Functions ---
-
 function showModal(type) {
     modalOverlay.classList.remove('hidden');
     modalOverlay.classList.add('flex');
     
-    // Select correct modal content
     const activeModal = (type === 'add' || type === 'edit') ? taskModal : deleteModal;
     const inactiveModal = (type === 'delete') ? taskModal : deleteModal;
     
     inactiveModal.classList.add('hidden');
     activeModal.classList.remove('hidden');
 
-    // Title & Context setup
     if (type === 'add' || type === 'edit') {
         if (type === 'edit') {
             modalTitle.innerText = 'Edit Task';
@@ -166,7 +148,6 @@ function showModal(type) {
         }
     }
 
-    // Trigger animations after reflow
     setTimeout(() => {
         activeModal.classList.remove('scale-95', 'opacity-0');
         activeModal.classList.add('scale-100', 'opacity-100');
@@ -194,7 +175,6 @@ function resetForm() {
     inputTaskId.value = '';
     currentEditId = null;
     
-    // Reset button UI
     updateButtonStyles(priorityButtons, [...priorityButtons].find(b => b.dataset.priority === 'Medium'));
     updateButtonStyles(statusButtons, [...statusButtons].find(b => b.dataset.status === 'Progress'));
     inputTaskPriority.value = 'Medium';
@@ -204,14 +184,12 @@ function resetForm() {
 function updateButtonStyles(buttons, activeBtn) {
     buttons.forEach(btn => {
         if (btn === activeBtn) {
-            // Active Styles (Match Color based on data)
             const p = btn.dataset.priority || btn.dataset.status;
             if (p === 'High') { btn.className = 'priority-btn border-2 border-red-500 bg-red-500 text-white font-semibold py-2 px-6 rounded-2xl flex-1'; }
             else if (p === 'Medium') { btn.className = 'priority-btn border-2 border-amber-500 bg-amber-500 text-white font-semibold py-2 px-6 rounded-2xl flex-1'; }
             else if (p === 'Low') { btn.className = 'priority-btn border-2 border-emerald-500 bg-emerald-500 text-white font-semibold py-2 px-6 rounded-2xl flex-1'; }
             else { btn.className = 'status-btn border-2 border-[#00BCD4] bg-[#00BCD4] text-white font-semibold py-2 px-6 rounded-2xl flex-1'; }
         } else {
-            // Inactive Styles
             const p = btn.dataset.priority || btn.dataset.status;
             if (p === 'High') { btn.className = 'priority-btn border-2 border-red-500 text-red-500 font-semibold py-2 px-6 rounded-2xl hover:bg-red-50 transition-colors duration-200 flex-1'; }
             else if (p === 'Medium') { btn.className = 'priority-btn border-2 border-amber-500 text-amber-500 font-semibold py-2 px-6 rounded-2xl hover:bg-amber-50 transition-colors duration-200 flex-1'; }
@@ -221,7 +199,6 @@ function updateButtonStyles(buttons, activeBtn) {
     });
 }
 
-// Expose to window for onclick handlers
 window.editTask = function(id) {
     const task = tasks.find(t => t.id === id);
     if (task) {
@@ -242,5 +219,4 @@ window.confirmDelete = function(id) {
     showModal('delete');
 };
 
-// Start the app
 init();

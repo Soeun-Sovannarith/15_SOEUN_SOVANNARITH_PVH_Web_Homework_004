@@ -4,9 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Task Management</title>
-    <!-- Tailwind CSS (compiled locally) -->
     <link href="./src/output.css" rel="stylesheet" />
-    <!-- Google Fonts: Inter -->
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
@@ -18,9 +16,7 @@
     </style>
   </head>
   <body class="bg-[#E0F2F1] min-h-screen p-8 transition-all duration-300">
-    <!-- Main UI Container -->
     <div id="app" class="max-w-5xl mx-auto space-y-6">
-      <!-- Header -->
       <div class="flex justify-between items-center mb-6">
         <h1 class="text-4xl font-bold tracking-tight text-slate-900">
           Task List
@@ -33,7 +29,6 @@
         </button>
       </div>
 
-      <!-- Table Header (Rounded Box) -->
       <div
         class="bg-white/40 backdrop-blur-sm border border-white/20 grid grid-cols-4 rounded-3xl p-6 shadow-sm mb-6"
       >
@@ -47,18 +42,13 @@
         >
       </div>
 
-      <!-- Task List Rows -->
-      <div id="taskList" class="space-y-4">
-        <!-- Dynamically populated by script.js -->
-      </div>
+      <div id="taskList" class="space-y-4"></div>
     </div>
 
-    <!-- Modals Overlay -->
     <div
       id="modalOverlay"
       class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden items-center justify-center p-4 transition-opacity duration-300"
     >
-      <!-- Add/Edit Task Modal -->
       <div
         id="taskModal"
         class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl p-10 relative hidden transform transition-all duration-300 scale-95 opacity-0"
@@ -172,7 +162,6 @@
         </form>
       </div>
 
-      <!-- Delete Confirmation Modal -->
       <div
         id="deleteModal"
         class="bg-white w-full max-w-md rounded-[2rem] shadow-2xl p-10 flex flex-col items-center text-center hidden animate-in zoom-in duration-300"
