@@ -9,23 +9,16 @@ let currentDeleteId = null;
 
 const taskList = document.getElementById('taskList');
 const addTaskBtn = document.getElementById('addTaskBtn');
-const modalOverlay = document.getElementById('modalOverlay');
-const taskModal = document.getElementById('taskModal');
-const deleteModal = document.getElementById('deleteModal');
+const taskDialog = document.getElementById('taskDialog');
+const deleteDialog = document.getElementById('deleteDialog');
 const taskForm = document.getElementById('taskForm');
 const modalTitle = document.getElementById('modalTitle');
 const submitBtn = document.getElementById('submitBtn');
 const cancelEditBtn = document.getElementById('cancelBtn');
-const closeModalBtn = document.getElementById('closeModal');
 const deleteConfirmBtn = document.getElementById('confirmDelete');
-const deleteCancelBtn = document.getElementById('cancelDelete');
 
 const inputTaskId = document.getElementById('taskId');
 const inputTaskName = document.getElementById('taskName');
-const inputTaskPriority = document.getElementById('taskPriority');
-const inputTaskStatus = document.getElementById('taskStatus');
-const priorityButtons = document.querySelectorAll('.priority-btn');
-const statusButtons = document.querySelectorAll('.status-btn');
 
 function init() {
     renderTasks();
@@ -74,41 +67,35 @@ function setupEventListeners() {
         showModal('add');
     });
 
-    [closeModalBtn, modalOverlay, deleteCancelBtn, cancelEditBtn].forEach(el => {
-        el.addEventListener('click', (e) => {
-            if (e.target === el || el === closeModalBtn || el === deleteCancelBtn || el === cancelEditBtn) {
-                hideModal();
-            }
-        });
-    });
-
-    priorityButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            inputTaskPriority.value = btn.dataset.priority;
-            updateButtonStyles(priorityButtons, btn);
-        });
-    });
-
-    statusButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            inputTaskStatus.value = btn.dataset.status;
-            updateButtonStyles(statusButtons, btn);
+    // No-JS closing handled by form method="dialog" in HTML
+    
+    // Optional: Close on backdrop click
+    [taskDialog, deleteDialog].forEach(dialog => {
+        dialog.addEventListener('click', (e) => {
+            if (e.target === dialog) dialog.close();
         });
     });
 
     taskForm.addEventListener('submit', (e) => {
         e.preventDefault();
+        
+        if (!inputTaskName.value.trim()) {
+            alert('Please input the task name');
+            return;
+        }
+
+        const formData = new FormData(taskForm);
         const taskData = {
             id: currentEditId || Date.now(),
             name: inputTaskName.value,
-            priority: inputTaskPriority.value,
-            status: inputTaskStatus.value
+            priority: formData.get('priority'),
+            status: formData.get('status')
         };
 
         if (currentEditId) {
             tasks = tasks.map(t => t.id === currentEditId ? taskData : t);
         } else {
-            tasks.push(taskData);
+            tasks.unshift(taskData);
         }
 
         renderTasks();
@@ -125,15 +112,8 @@ function setupEventListeners() {
 }
 
 function showModal(type) {
-    modalOverlay.classList.remove('hidden');
-    modalOverlay.classList.add('flex');
+    const activeDialog = (type === 'add' || type === 'edit') ? taskDialog : deleteDialog;
     
-    const activeModal = (type === 'add' || type === 'edit') ? taskModal : deleteModal;
-    const inactiveModal = (type === 'delete') ? taskModal : deleteModal;
-    
-    inactiveModal.classList.add('hidden');
-    activeModal.classList.remove('hidden');
-
     if (type === 'add' || type === 'edit') {
         if (type === 'edit') {
             modalTitle.innerText = 'Edit Task';
@@ -148,55 +128,20 @@ function showModal(type) {
         }
     }
 
-    setTimeout(() => {
-        activeModal.classList.remove('scale-95', 'opacity-0');
-        activeModal.classList.add('scale-100', 'opacity-100');
-    }, 10);
+    activeDialog.showModal();
 }
 
 function hideModal() {
-    const activeModal = !taskModal.classList.contains('hidden') ? taskModal : deleteModal;
-    
-    activeModal.classList.remove('scale-100', 'opacity-100');
-    activeModal.classList.add('scale-95', 'opacity-0');
-
-    setTimeout(() => {
-        modalOverlay.classList.remove('flex');
-        modalOverlay.classList.add('hidden');
-        taskModal.classList.add('hidden');
-        deleteModal.classList.add('hidden');
-        currentEditId = null;
-        currentDeleteId = null;
-    }, 300);
+    taskDialog.close();
+    deleteDialog.close();
+    currentEditId = null;
+    currentDeleteId = null;
 }
 
 function resetForm() {
     taskForm.reset();
     inputTaskId.value = '';
     currentEditId = null;
-    
-    updateButtonStyles(priorityButtons, [...priorityButtons].find(b => b.dataset.priority === 'Medium'));
-    updateButtonStyles(statusButtons, [...statusButtons].find(b => b.dataset.status === 'Progress'));
-    inputTaskPriority.value = 'Medium';
-    inputTaskStatus.value = 'Progress';
-}
-
-function updateButtonStyles(buttons, activeBtn) {
-    buttons.forEach(btn => {
-        if (btn === activeBtn) {
-            const p = btn.dataset.priority || btn.dataset.status;
-            if (p === 'High') { btn.className = 'priority-btn border-2 border-red-500 bg-red-500 text-white font-semibold py-2 px-6 rounded-2xl flex-1'; }
-            else if (p === 'Medium') { btn.className = 'priority-btn border-2 border-amber-500 bg-amber-500 text-white font-semibold py-2 px-6 rounded-2xl flex-1'; }
-            else if (p === 'Low') { btn.className = 'priority-btn border-2 border-emerald-500 bg-emerald-500 text-white font-semibold py-2 px-6 rounded-2xl flex-1'; }
-            else { btn.className = 'status-btn border-2 border-[#00BCD4] bg-[#00BCD4] text-white font-semibold py-2 px-6 rounded-2xl flex-1'; }
-        } else {
-            const p = btn.dataset.priority || btn.dataset.status;
-            if (p === 'High') { btn.className = 'priority-btn border-2 border-red-500 text-red-500 font-semibold py-2 px-6 rounded-2xl hover:bg-red-50 transition-colors duration-200 flex-1'; }
-            else if (p === 'Medium') { btn.className = 'priority-btn border-2 border-amber-500 text-amber-500 font-semibold py-2 px-6 rounded-2xl hover:bg-amber-50 transition-colors duration-200 flex-1'; }
-            else if (p === 'Low') { btn.className = 'priority-btn border-2 border-emerald-500 text-emerald-500 font-semibold py-2 px-6 rounded-2xl hover:bg-emerald-50 transition-colors duration-200 flex-1'; }
-            else { btn.className = 'status-btn border-2 border-[#00BCD4] text-[#00BCD4] font-semibold py-2 px-6 rounded-2xl hover:bg-[#E0F7FA] transition-colors duration-200 flex-1'; }
-        }
-    });
 }
 
 window.editTask = function(id) {
@@ -204,11 +149,12 @@ window.editTask = function(id) {
     if (task) {
         currentEditId = id;
         inputTaskName.value = task.name;
-        inputTaskPriority.value = task.priority;
-        inputTaskStatus.value = task.status;
         
-        updateButtonStyles(priorityButtons, [...priorityButtons].find(b => b.dataset.priority === task.priority));
-        updateButtonStyles(statusButtons, [...statusButtons].find(b => b.dataset.status === task.status));
+        // Set radio buttons
+        const priorityRadio = taskForm.querySelector(`input[name="priority"][value="${task.priority}"]`);
+        const statusRadio = taskForm.querySelector(`input[name="status"][value="${task.status}"]`);
+        if (priorityRadio) priorityRadio.checked = true;
+        if (statusRadio) statusRadio.checked = true;
         
         showModal('edit');
     }

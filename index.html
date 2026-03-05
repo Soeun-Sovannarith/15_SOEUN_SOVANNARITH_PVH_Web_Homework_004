@@ -45,14 +45,11 @@
       <div id="taskList" class="space-y-4"></div>
     </div>
 
-    <div
-      id="modalOverlay"
-      class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden items-center justify-center p-4 transition-opacity duration-300"
+    <dialog
+      id="taskDialog"
+      class="fixed inset-0 m-auto h-fit w-[calc(100vw-2rem)] max-w-lg bg-white rounded-[2.5rem] shadow-2xl p-10 backdrop:bg-black/50 backdrop:backdrop-blur-sm focus:outline-none max-h-[90vh] overflow-y-auto"
     >
-      <div
-        id="taskModal"
-        class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl p-10 relative hidden transform transition-all duration-300 scale-95 opacity-0"
-      >
+      <form method="dialog">
         <button
           id="closeModal"
           class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"
@@ -72,100 +69,138 @@
             />
           </svg>
         </button>
-        <h2 id="modalTitle" class="text-2xl font-bold mb-6">Add Task</h2>
+      </form>
+      <h2 id="modalTitle" class="text-2xl font-bold mb-6">Add Task</h2>
 
-        <form id="taskForm" class="space-y-6">
-          <input type="hidden" id="taskId" />
-          <div>
-            <label class="block text-slate-700 font-bold mb-2">Task</label>
-            <input
-              type="text"
-              id="taskName"
-              placeholder="Web Homework"
-              class="w-full border-2 border-[#00BCD4] rounded-2xl py-3 px-4 focus:ring-2 focus:ring-[#00BCD4] outline-none transition-shadow duration-200"
-              required
-            />
-          </div>
+      <form id="taskForm" class="space-y-6">
+        <input type="hidden" id="taskId" />
+        <div>
+          <label class="block text-slate-700 font-bold mb-2">Task</label>
+          <input
+            type="text"
+            id="taskName"
+            placeholder="Web Homework"
+            class="w-full border-2 border-[#00BCD4] rounded-2xl py-3 px-4 focus:ring-2 focus:ring-[#00BCD4] outline-none transition-shadow duration-200"
+          />
+        </div>
 
-          <div>
-            <label class="block text-slate-700 font-bold mb-2">Priority</label>
-            <div class="flex gap-3">
-              <button
-                type="button"
-                data-priority="High"
-                class="priority-btn border-2 border-red-500 text-red-500 font-semibold py-2 px-6 rounded-2xl hover:bg-red-50 transition-colors duration-200 flex-1"
+        <div>
+          <label class="block text-slate-700 font-bold mb-2">Priority</label>
+          <div class="flex gap-3">
+            <label class="flex-1">
+              <input
+                type="radio"
+                name="priority"
+                value="High"
+                class="peer hidden"
+              />
+              <div
+                class="cursor-pointer border-2 border-red-500 text-red-500 font-semibold py-2 px-6 rounded-2xl hover:bg-red-50 transition-all duration-200 text-center peer-checked:bg-red-500 peer-checked:text-white"
               >
                 High
-              </button>
-              <button
-                type="button"
-                data-priority="Medium"
-                class="priority-btn border-2 border-amber-500 text-amber-500 font-semibold py-2 px-6 rounded-2xl hover:bg-amber-50 transition-colors duration-200 flex-1"
+              </div>
+            </label>
+            <label class="flex-1">
+              <input
+                type="radio"
+                name="priority"
+                value="Medium"
+                checked
+                class="peer hidden"
+              />
+              <div
+                class="cursor-pointer border-2 border-amber-500 text-amber-500 font-semibold py-2 px-6 rounded-2xl hover:bg-amber-50 transition-all duration-200 text-center peer-checked:bg-amber-500 peer-checked:text-white"
               >
                 Medium
-              </button>
-              <button
-                type="button"
-                data-priority="Low"
-                class="priority-btn border-2 border-emerald-500 text-emerald-500 font-semibold py-2 px-6 rounded-2xl hover:bg-emerald-50 transition-colors duration-200 flex-1"
+              </div>
+            </label>
+            <label class="flex-1">
+              <input
+                type="radio"
+                name="priority"
+                value="Low"
+                class="peer hidden"
+              />
+              <div
+                class="cursor-pointer border-2 border-emerald-500 text-emerald-500 font-semibold py-2 px-6 rounded-2xl hover:bg-emerald-50 transition-all duration-200 text-center peer-checked:bg-emerald-500 peer-checked:text-white"
               >
                 Low
-              </button>
-            </div>
-            <input type="hidden" id="taskPriority" value="Medium" />
+              </div>
+            </label>
           </div>
+        </div>
 
-          <div>
-            <label class="block text-slate-700 font-bold mb-2">Status</label>
-            <div class="flex gap-3">
-              <button
-                type="button"
-                data-status="To Do"
-                class="status-btn border-2 border-[#00BCD4] text-[#00BCD4] font-semibold py-2 px-6 rounded-2xl hover:bg-[#E0F7FA] transition-colors duration-200 flex-1"
+        <div>
+          <label class="block text-slate-700 font-bold mb-2">Status</label>
+          <div class="flex gap-3">
+            <label class="flex-1">
+              <input
+                type="radio"
+                name="status"
+                value="To Do"
+                class="peer hidden"
+              />
+              <div
+                class="cursor-pointer border-2 border-[#00BCD4] text-[#00BCD4] font-semibold py-2 px-6 rounded-2xl hover:bg-[#E0F7FA] transition-all duration-200 text-center peer-checked:bg-[#00BCD4] peer-checked:text-white"
               >
                 To Do
-              </button>
-              <button
-                type="button"
-                data-status="Progress"
-                class="status-btn border-2 border-[#00BCD4] text-[#00BCD4] font-semibold py-2 px-6 rounded-2xl hover:bg-[#E0F7FA] transition-colors duration-200 flex-1"
+              </div>
+            </label>
+            <label class="flex-1">
+              <input
+                type="radio"
+                name="status"
+                value="Progress"
+                checked
+                class="peer hidden"
+              />
+              <div
+                class="cursor-pointer border-2 border-[#00BCD4] text-[#00BCD4] font-semibold py-2 px-6 rounded-2xl hover:bg-[#E0F7FA] transition-all duration-200 text-center peer-checked:bg-[#00BCD4] peer-checked:text-white"
               >
                 Progress
-              </button>
-              <button
-                type="button"
-                data-status="Done"
-                class="status-btn border-2 border-[#00BCD4] text-[#00BCD4] font-semibold py-2 px-6 rounded-2xl hover:bg-[#E0F7FA] transition-colors duration-200 flex-1"
+              </div>
+            </label>
+            <label class="flex-1">
+              <input
+                type="radio"
+                name="status"
+                value="Done"
+                class="peer hidden"
+              />
+              <div
+                class="cursor-pointer border-2 border-[#00BCD4] text-[#00BCD4] font-semibold py-2 px-6 rounded-2xl hover:bg-[#E0F7FA] transition-all duration-200 text-center peer-checked:bg-[#00BCD4] peer-checked:text-white"
               >
                 Done
-              </button>
-            </div>
-            <input type="hidden" id="taskStatus" value="Progress" />
+              </div>
+            </label>
           </div>
+        </div>
 
-          <div class="flex justify-end gap-3 pt-4">
-            <button
-              type="button"
-              id="cancelBtn"
-              class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition-transform active:scale-95 hidden"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              id="submitBtn"
-              class="bg-[#6A1B9A] hover:bg-purple-800 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition-transform active:scale-95 flex-1 md:flex-none"
-            >
-              Add
-            </button>
-          </div>
-        </form>
-      </div>
+        <div class="flex justify-end gap-3 pt-4">
+          <button
+            type="submit"
+            id="cancelBtn"
+            formmethod="dialog"
+            class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition-transform active:scale-95 hidden"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            id="submitBtn"
+            class="bg-[#6A1B9A] hover:bg-purple-800 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition-transform active:scale-95 flex-1 md:flex-none"
+          >
+            Add
+          </button>
+        </div>
+      </form>
+    </dialog>
 
-      <div
-        id="deleteModal"
-        class="bg-white w-full max-w-md rounded-[2rem] shadow-2xl p-10 flex flex-col items-center text-center hidden animate-in zoom-in duration-300"
-      >
+    <dialog
+      id="deleteDialog"
+      class="fixed inset-0 m-auto h-fit w-[calc(100vw-2rem)] max-w-md bg-white rounded-[2rem] shadow-2xl p-10 backdrop:bg-black/50 backdrop:backdrop-blur-sm focus:outline-none"
+    >
+      <div class="flex flex-col items-center text-center">
         <h2 class="text-3xl font-extrabold text-red-600 mb-8">
           Are you sure ?
         </h2>
@@ -192,13 +227,14 @@
           </button>
           <button
             id="cancelDelete"
+            formmethod="dialog"
             class="bg-[#2196F3] hover:bg-[#1976D2] text-white font-bold py-3 rounded-2xl flex-1 shadow-lg transition-transform active:scale-95"
           >
             No
           </button>
         </div>
       </div>
-    </div>
+    </dialog>
 
     <script src="script.js"></script>
   </body>
